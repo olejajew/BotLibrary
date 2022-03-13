@@ -115,9 +115,8 @@ class AwsProvider(
     }
 
     fun getImageInputStream(imageName: String, bucket: String, botId: String): InputStream {
-        if (s3Client == null) return InputStream.nullInputStream()
         val request = GetObjectRequest("$rootBucketName/$botId/$bucket", "$imageName.png")
-        val result = s3Client.getObject(request)
+        val result = s3Client!!.getObject(request)
         return result.objectContent
     }
 
