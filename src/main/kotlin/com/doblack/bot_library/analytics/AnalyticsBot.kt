@@ -5,8 +5,6 @@ import com.doblack.bot_library.base.ChatBot
 
 interface AnalyticsBot {
 
-    fun isDebug(): Boolean
-
     fun getChatBot(): ChatBot
 
     fun getBotId(): String

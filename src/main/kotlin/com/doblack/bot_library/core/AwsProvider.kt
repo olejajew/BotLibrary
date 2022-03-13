@@ -6,8 +6,8 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.*
 import java.io.*
-import java.lang.Exception
 import java.util.*
+import kotlin.Exception
 
 class AwsProvider(
     private val url: String,
@@ -17,13 +17,26 @@ class AwsProvider(
     private val rootBucketName: String
 ) {
 
-    private val awsCreds = BasicAWSCredentials(accessKey, secretKey)
-    private val s3Client: AmazonS3 = AmazonS3ClientBuilder.standard()
-        .withCredentials(AWSStaticCredentialsProvider(awsCreds))
-        .withRegion(region)
-        .build()
+    private val awsCreds: BasicAWSCredentials? = try {
+        BasicAWSCredentials(accessKey, secretKey)
+    } catch (e: Exception) {
+        System.err.println("Aws not initialized")
+        e.printStackTrace()
+        null
+    }
+    private val s3Client: AmazonS3? = try {
+        AmazonS3ClientBuilder.standard()
+            .withCredentials(AWSStaticCredentialsProvider(awsCreds))
+            .withRegion(region)
+            .build()
+    } catch (e: Exception) {
+        System.err.println("Aws not initialized")
+        e.printStackTrace()
+        null
+    }
 
     fun saveTextFile(content: String, fileName: String, bucket: String, botId: String): Boolean {
+        if (s3Client == null) return false
         val bytes = content.toByteArray()
         val inputStream = ByteArrayInputStream(bytes)
         val metadata = ObjectMetadata()
@@ -41,6 +54,7 @@ class AwsProvider(
     }
 
     fun getTextFileContent(botId: String, bucket: String, fileName: String): String? {
+        if (s3Client == null) return null
         return try {
             val request = GetObjectRequest("$rootBucketName/$botId/$bucket", fileName)
             val result = s3Client.getObject(request)
@@ -54,6 +68,7 @@ class AwsProvider(
     }
 
     fun saveImage(imageInBase64: String, fileName: String, bucket: String, botId: String): Boolean {
+        if (s3Client == null) return false
         val bytes = imageInBase64.base64ToByteArray() ?: return false
         val inputStream = ByteArrayInputStream(bytes)
         val metadata = ObjectMetadata()
@@ -71,6 +86,8 @@ class AwsProvider(
     }
 
     fun deleteFiles(images: Array<String>, bucket: String, botId: String) {
+        if (s3Client == null) return
+
         val toDelete = images.map {
             "$botId/$bucket/$it"
         }.toTypedArray()
@@ -88,6 +105,8 @@ class AwsProvider(
     }
 
     fun getFilesList(botId: String, bucket: String): List<String> {
+        if (s3Client == null) return emptyList()
+
         val request = ListObjectsV2Request()
             .withBucketName(rootBucketName)
             .withPrefix("$botId/$bucket")
@@ -96,6 +115,7 @@ class AwsProvider(
     }
 
     fun getImageInputStream(imageName: String, bucket: String, botId: String): InputStream {
+        if (s3Client == null) return InputStream.nullInputStream()
         val request = GetObjectRequest("$rootBucketName/$botId/$bucket", "$imageName.png")
         val result = s3Client.getObject(request)
         return result.objectContent
