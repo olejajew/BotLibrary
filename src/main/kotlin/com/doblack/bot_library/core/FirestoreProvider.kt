@@ -1,22 +1,19 @@
-package com.botlibrary.core
+package com.doblack.bot_library.core
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.CollectionReference
-import com.google.cloud.firestore.Firestore
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import java.io.InputStream
 
-object FirestoreProvider {
+class FirestoreProvider(firebaseAppKey: InputStream) {
 
-    private fun getFirebaseFile(): InputStream? {
-        return javaClass.getResource("/FirebaseAppKey.json").openStream()
-    }
+    //javaClass.getResource("/FirebaseAppKey.json").openStream()
 
     init {
         val options = FirebaseOptions.builder()
-            .setCredentials(GoogleCredentials.fromStream(getFirebaseFile()))
+            .setCredentials(GoogleCredentials.fromStream(firebaseAppKey))
             .build()
 
         FirebaseApp.initializeApp(options)

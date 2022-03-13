@@ -13,6 +13,4 @@ interface AnalyticsBot {
 
     fun getNewReferrerListener(): NewReferralListener
 
-    fun getAnalyticsModule(): AnalyticsModule
-
 }

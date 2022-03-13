@@ -10,12 +10,16 @@ import com.doblack.bot_library.analytics.referrer.data.ReferrerLinkModel
 import com.doblack.bot_library.analytics.referrer.data.UserReferrerInfo
 import com.doblack.bot_library.analytics.users.UsersProvider
 import com.doblack.bot_library.analytics.users.data.UsersCountModel
+import com.doblack.bot_library.core.AwsProvider
+import com.doblack.bot_library.core.FirestoreProvider
 
 class AnalyticsModule(
-    private val analyticsBot: AnalyticsBot
+    private val analyticsBot: AnalyticsBot,
+    private val firestoreProvider: FirestoreProvider,
+    val awsProvider: AwsProvider
 ) {
 
-    private val databaseHelper = DatabaseHelper(analyticsBot.getBotId(), analyticsBot.isDebug())
+    private val databaseHelper = DatabaseHelper(analyticsBot.getBotId(), firestoreProvider)
     private val filesProvider = FilesProvider(this)
     private val messagingProvider = MessagingProvider(this)
     private val referrerProvider = ReferrerProvider(this, analyticsBot.getNewReferrerListener())

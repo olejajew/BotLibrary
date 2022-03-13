@@ -2,11 +2,13 @@ package com.doblack.bot_library.constructor
 
 import com.doblack.bot_library.constructor.models.InstructionsModel
 import com.doblack.bot_library.constructor.parser.InstructionsParser
+import com.doblack.bot_library.core.AwsProvider
 import java.io.InputStream
 import java.util.*
 
 class ConstructorModule(
     val constructor: BotConstructor,
+    awsProvider: AwsProvider
 ) {
 
     //todo Валидация + подбивка айдишников
@@ -15,7 +17,7 @@ class ConstructorModule(
     //todo Предписанные переменные
 
     val chatBot = constructor.getChatBot()
-    private val filesProvider = FilesProvider(chatBot.botUsername)
+    private val filesProvider = FilesProvider(chatBot.botUsername, awsProvider)
     private var instructionsParser = InstructionsParser(filesProvider.getInstructionsModel())
     private val scriptExecutor = ScriptExecutor(this)
 

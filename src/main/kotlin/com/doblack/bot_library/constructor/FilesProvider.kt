@@ -1,11 +1,11 @@
 package com.doblack.bot_library.constructor
 
-import com.botlibrary.core.AwsProvider
+import com.doblack.bot_library.core.AwsProvider
 import com.doblack.bot_library.constructor.models.InstructionsModel
 import com.google.gson.Gson
 import java.io.InputStream
 
-class FilesProvider(private val botId: String) {
+class FilesProvider(private val botId: String, private val awsProvider: AwsProvider) {
 
     private val gson = Gson()
     private var instructions: String? = null
@@ -21,14 +21,14 @@ class FilesProvider(private val botId: String) {
     }
 
     fun updateInstructions(instructions: InstructionsModel) {
-        AwsProvider.saveTextFile(gson.toJson(instructions), INSTRUCTIONS_FILE_NAME, BUCKET_NAME, botId)
+        awsProvider.saveTextFile(gson.toJson(instructions), INSTRUCTIONS_FILE_NAME, BUCKET_NAME, botId)
         this.instructions = gson.toJson(instructions)
         deleteUselessImages(instructions)
     }
 
     fun getInstructionsString(): String {
         if (instructions == null) {
-            instructions = AwsProvider.getTextFileContent(botId, BUCKET_NAME, INSTRUCTIONS_FILE_NAME)
+            instructions = awsProvider.getTextFileContent(botId, BUCKET_NAME, INSTRUCTIONS_FILE_NAME)
         }
         return instructions ?: "{}"
     }
@@ -42,15 +42,15 @@ class FilesProvider(private val botId: String) {
     }
 
     fun saveImage(imageId: String, imageBase64: String) {
-        AwsProvider.saveImage(imageBase64, "$imageId.png", BUCKET_NAME, botId)
+        awsProvider.saveImage(imageBase64, "$imageId.png", BUCKET_NAME, botId)
     }
 
     private fun getImagesList(): List<String> {
-        return AwsProvider.getFilesList(botId, BUCKET_NAME)
+        return awsProvider.getFilesList(botId, BUCKET_NAME)
     }
 
     fun getImage(imageName: String): InputStream {
-        return AwsProvider.getImageInputStream(imageName, BUCKET_NAME, botId)
+        return awsProvider.getImageInputStream(imageName, BUCKET_NAME, botId)
     }
 
     private fun deleteUselessImages(instructions: InstructionsModel) {
@@ -66,7 +66,7 @@ class FilesProvider(private val botId: String) {
         println(imagesFromInstructions)
         println(getCurrentImages)
         println(toDelete)
-        AwsProvider.deleteFiles(toDelete.toTypedArray(), BUCKET_NAME, botId)
+        awsProvider.deleteFiles(toDelete.toTypedArray(), BUCKET_NAME, botId)
     }
 
     private fun getImagesListFromInstructions(instructions: InstructionsModel): ArrayList<String> {
@@ -86,7 +86,7 @@ class FilesProvider(private val botId: String) {
     }
 
     fun getImageUrl(imageId: String): String {
-        return AwsProvider.getImageLink(botId, BUCKET_NAME, imageId)
+        return awsProvider.getImageLink(botId, BUCKET_NAME, imageId)
     }
 
 }

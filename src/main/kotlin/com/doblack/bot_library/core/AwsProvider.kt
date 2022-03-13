@@ -1,4 +1,4 @@
-package com.botlibrary.core
+package com.doblack.bot_library.core
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
@@ -9,14 +9,19 @@ import java.io.*
 import java.lang.Exception
 import java.util.*
 
-object AwsProvider {
+class AwsProvider(
+    private val url: String,
+    accessKey: String,
+    secretKey: String,
+    region: String,
+    private val rootBucketName: String
+) {
 
-    private val awsCreds = BasicAWSCredentials("AKIART4NNV7IFG3JUIJQ", "7a952VNFz7Jifjdbkl3Qme84o6ueG9SKPLwWchJy")
+    private val awsCreds = BasicAWSCredentials(accessKey, secretKey)
     private val s3Client: AmazonS3 = AmazonS3ClientBuilder.standard()
         .withCredentials(AWSStaticCredentialsProvider(awsCreds))
-        .withRegion("us-west-1")
+        .withRegion(region)
         .build()
-    private const val BUCKET_NAME = "bot-admin-project"
 
     fun saveTextFile(content: String, fileName: String, bucket: String, botId: String): Boolean {
         val bytes = content.toByteArray()
@@ -25,7 +30,7 @@ object AwsProvider {
         metadata.contentType = "text/plain"
         metadata.contentLength = bytes.size.toLong()
         val request = PutObjectRequest(
-            "$BUCKET_NAME/$botId/$bucket",
+            "$rootBucketName/$botId/$bucket",
             fileName,
             inputStream,
             metadata
@@ -37,7 +42,7 @@ object AwsProvider {
 
     fun getTextFileContent(botId: String, bucket: String, fileName: String): String? {
         return try {
-            val request = GetObjectRequest("$BUCKET_NAME/$botId/$bucket", fileName)
+            val request = GetObjectRequest("$rootBucketName/$botId/$bucket", fileName)
             val result = s3Client.getObject(request)
             val inputStream = InputStreamReader(result.objectContent)
             val bufferReader = BufferedReader(inputStream)
@@ -55,7 +60,7 @@ object AwsProvider {
         metadata.contentType = "image/png"
         metadata.contentLength = bytes.size.toLong()
         val request = PutObjectRequest(
-            "$BUCKET_NAME/$botId/$bucket",
+            "$rootBucketName/$botId/$bucket",
             fileName,
             inputStream,
             metadata
@@ -69,28 +74,29 @@ object AwsProvider {
         val toDelete = images.map {
             "$botId/$bucket/$it"
         }.toTypedArray()
-        val request = DeleteObjectsRequest(BUCKET_NAME)
+        val request = DeleteObjectsRequest(rootBucketName)
             .withKeys(*toDelete)
             .withQuiet(false)
         try {
             s3Client.deleteObjects(request)
-        } catch (e: Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     fun getImageLink(botId: String, bucket: String, imageId: String): String {
-        return "https://bot-admin-project.s3.us-west-1.amazonaws.com/$botId/$bucket/$imageId.png"
+        return "$url/$botId/$bucket/$imageId.png"
     }
 
     fun getFilesList(botId: String, bucket: String): List<String> {
         val request = ListObjectsV2Request()
-            .withBucketName(BUCKET_NAME)
+            .withBucketName(rootBucketName)
             .withPrefix("$botId/$bucket")
         return s3Client.listObjectsV2(request).objectSummaries.filter { it.key.contains("png") }
             .map { it.key.split("/")[1] }
     }
 
     fun getImageInputStream(imageName: String, bucket: String, botId: String): InputStream {
-        val request = GetObjectRequest("$BUCKET_NAME/$botId/$bucket", "$imageName.png")
+        val request = GetObjectRequest("$rootBucketName/$botId/$bucket", "$imageName.png")
         val result = s3Client.getObject(request)
         return result.objectContent
     }
