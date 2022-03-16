@@ -22,11 +22,7 @@ abstract class TelegramBot : TelegramLongPollingBot() {
         }
     }
 
-    override fun onUpdateReceived(update: Update?) {
-        println(update)
-        if (update == null || (!update.hasMessage() && !update.hasCallbackQuery())) {
-            return
-        }
+    override fun onUpdateReceived(update: Update) {
         when {
             update.hasCallbackQuery() -> {
                 callbackMessageReceived(update)
