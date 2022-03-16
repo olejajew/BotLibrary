@@ -5,6 +5,7 @@ import com.doblack.bot_library.analytics.users.data.DayUsersInfoModel
 import com.doblack.bot_library.analytics.users.data.UsersCountModel
 import com.doblack.bot_library.analytics.utils.groupByDay
 import com.doblack.bot_library.base.UserLifecycleObserver
+import org.apache.commons.logging.Log
 import org.joda.time.DateTime
 import org.joda.time.DateTimeFieldType
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -21,6 +22,7 @@ class UsersProvider(private val analyticsModule: AnalyticsModule) : UserLifecycl
     }
 
     override fun onStartCommand(message: Message) {
+        println("User started = ${message.chat}")
         analyticsModule.getDatabaseHelper().usersTableProvider.saveUser(message.chatId)
     }
 

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "telegramgames-979be",
+  "private_key_id": "b34f498cfed757e0cff71946cc6081e8d3e7c191",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPONJXDaj9W6TJ\nBIwwCImodbHCLbH2146AQPkDsUhdnkbiDtYIWlI7+FQhXjMD6aUq+kSeUk/MQA4c\nWwV9YukPSNhQGA1hRO2tmlErrhcu7GOJlKD4uNlstu0xwVVdwL6k1CbBdU0c1U2O\nyTBb8Mzxy5QWbOr1OFPLP6A2+haduYhDu4pwJaUC/K+PGeAkEa2ZszniNgeBhI2u\nml+3DlVGaofW5OGv3a5zq4MUR0vg99RVc1wllHbnDzauDa+qJQvKwQEa4KmRphBa\n/kC5Gbt+mtTTDiP1qGKODsNmsuPbGCVubKKCCxIHOqVMxQrjpQ84pmES+QhL4+N/\nP1gkYIJVAgMBAAECggEAAzgnRb9KalE+VfnSRxFtjhFHXInC3jUKxjb8MhCoMVLQ\nWBpnPIRRYGl4aSJNBEO2KLJFrE4BZl4dD1diAPOEmmkFJKK9sSQAgKDJSmFEg+/x\nO0XKBcMywYvKqJS6g5/cdl7DZrWwp9Yv2Rw1ZPWbQYBqVw+Edksp5hpMHhPe6RQI\nfUYr8rh9tQnTV7uLVo7/gTKH0zfisJr/STHCheeCZLcZpPyd7QhoBGJsVRj8rE8w\na0L9waf3xb799ftwpQEotpdDwWehmBN+Ur75p4KAM7ttothmdQb+F+JbMmZw6kmp\nxaej6pA76Gk/jm3eNQKQS3ZomOqMWKW7QdG5jVCIYQKBgQDzOjjRhHxCLxZe5IH3\nUw6r/wQyij3M63BA6UNngV86BuET01RGxKRuuAc4n/S7IO5pFB73Tb9LJnKKHcRg\nd4IxUxhOu8CibCtsEzTOKNMf0IMw5zGGlg1Rq+nl9rVUUwvOzQnaO8q8pxlJScYF\na7ZGjrrdLoJgcxUh87n8+qeI0QKBgQDaGpFKnFmdx/2EyDT+tQSqpLCzAmNHPnMz\ndChQ7I0L2rbUgAq9SReLYgVqNqQrxHi0REkd5vIv+RNsfywHDPh+weu9+onsURSg\nnckYbcpjosl6XcBg1qEyGno/bn01gMdjlUFdqGXYljDfYeOUu1UVAj9PmL7rGQdv\npi1jHXcCRQKBgGG9o9eOReDSy0qWySN6XQsBD86/ftY6RoHPOyb89id7XDd7VQKb\nQvi7OyumG9KXCTdwvoDi3Vx1ttGJ5MBfRhJMMhhxmpeqoEht72ppPW4rfIzKWzya\nT//h9bxTx8p7FOOlwa/RF0d4XtD0tH65KiZwdOctKXdYx8U9DCB9GZYBAoGBAK7y\naqLXgUb/uYq98UxyNTkP+7DLdIkcPdoDDafD52uf19Hilzq4G4uxZ7iH9e4pncyz\njZbPvmret0brR4ysSdObh5aPFf0aGJqxljHjN1nupQBjnUHQR+LhvDePUB4Pm2B0\nw8b1oiQ2bSNx6NRP4/KDJ/eYBWSdYgqb2IJNiz2lAoGBALXpYPRQEBC0r+bFtr1O\np2Br2Q3wFNrcN1Glsck40CS6KVEvru0ajxN4DnP26RwnkIM/kKtP++rc2naQWeOx\nflGvBWdIU8sPy4z3B+T0kr5bc4HXNPbdCgVwPHEbwlmm7Yk5StPH1kzBwyXu+mQx\nbXxgCrlYoqTKw75HVYM7Q0lR\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-z5i0m@telegramgames-979be.iam.gserviceaccount.com",
+  "client_id": "111488832748110675799",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-z5i0m%40telegramgames-979be.iam.gserviceaccount.com"
+}
