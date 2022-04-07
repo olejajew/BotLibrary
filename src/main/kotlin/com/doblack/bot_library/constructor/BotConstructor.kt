@@ -9,4 +9,6 @@ interface BotConstructor {
 
     fun getChatBot(): ChatBot
 
+    fun getInstructions(): InstructionsModel
+
 }

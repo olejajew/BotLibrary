@@ -1,4 +1,4 @@
-package com.doblack.bot_library.analytics.referrer.data
+package com.doblack.bot_library.analytics.models
 
 import java.util.*
 

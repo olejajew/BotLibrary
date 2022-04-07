@@ -4,13 +4,13 @@ import com.doblack.bot_library.base.models.BotButton
 import com.doblack.bot_library.base.models.ImageInputStream
 import org.telegram.telegrambots.meta.api.methods.ActionType
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
-import org.telegram.telegrambots.meta.api.methods.send.SendGame
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.*
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -22,10 +22,10 @@ abstract class ChatBot : TelegramBot() {
     private val keyboardButtons = arrayListOf<BotButton>()
     private var userLifecycleObservers: ArrayList<UserLifecycleObserver> = arrayListOf()
 
-    override fun commandReceived(message: Message) {
-        if (message.getCommand() == "/start") {
+    override fun commandReceived(update: Update) {
+        if (update.message.getCommand() == "/start") {
             userLifecycleObservers.forEach {
-                it.onStartCommand(message)
+                it.onStartCommand(update)
             }
         }
     }

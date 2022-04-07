@@ -82,7 +82,7 @@ class ScriptExecutor(private val constructorModule: ConstructorModule) {
             return
         }
         val imageInputStream = ImageInputStream(
-            constructorModule.getFilesProvider().getImage(data.images.first()),
+            constructorModule.getFilesProvider().getImageInputStream(data.images.first()),
             data.images.first()
         )
         constructorModule.chatBot.sendMessageWithImageInputStream(imageInputStream, chatId, data.text)
@@ -93,7 +93,6 @@ class ScriptExecutor(private val constructorModule: ConstructorModule) {
             return
         }
         val buttons = convertToBotButtons(data.buttons, ButtonType.keyboardButton)
-        //todo Не нравится, что картинки каждый раз из base64 конвертируются
         constructorModule.chatBot.sendMessageWithImageInputStream(
             getImage(data.images.first()),
             chatId,
@@ -116,7 +115,6 @@ class ScriptExecutor(private val constructorModule: ConstructorModule) {
             return
         }
         val buttons = convertToBotButtons(data.buttons, ButtonType.inlineButton)
-        //todo Не нравится, что картинки каждый раз из base64 конвертируются
         constructorModule.chatBot.sendMessageWithImageInputStream(
             getImage(data.images.first()),
             chatId,
@@ -159,7 +157,7 @@ class ScriptExecutor(private val constructorModule: ConstructorModule) {
     }
 
     private fun getImage(imageName: String): ImageInputStream {
-        return ImageInputStream(constructorModule.getFilesProvider().getImage(imageName), imageName)
+        return ImageInputStream(constructorModule.getFilesProvider().getImageInputStream(imageName), imageName)
     }
 
     private fun getImages(images: List<String>): List<ImageInputStream> {

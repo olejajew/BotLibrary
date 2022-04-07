@@ -1,6 +1,6 @@
 package com.doblack.bot_library
 
-class Application {
+private class Application {
 
     companion object{
         @JvmStatic

@@ -20,12 +20,12 @@ class AliveUserChecker(private val hoursToCheck: Int = 23) {
                 timer = Timer()
                 timer!!.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
-                        analyticsModule.getDatabaseHelper().usersTableProvider.getAliveUsers().forEach {
+                        analyticsModule.getDatabase().getAliveUsers().forEach {
                             try {
                                 analyticsModule.getChatBot().tryChatAction(it.tgUserId)
                             } catch (e: TelegramApiException) {
                                 if (e.checkIsBlocked()) {
-                                    analyticsModule.getDatabaseHelper().usersTableProvider.userBlocked(it.tgUserId)
+                                    analyticsModule.getDatabase().userBlocked(it.tgUserId)
                                 }
                             }
                         }

@@ -2,13 +2,11 @@ package com.doblack.bot_library.constructor
 
 import com.doblack.bot_library.constructor.models.InstructionsModel
 import com.doblack.bot_library.constructor.parser.InstructionsParser
-import com.doblack.bot_library.core.AwsProvider
-import java.io.InputStream
-import java.util.*
+import com.doblack.bot_library.FilesStorageDelegate
 
 class ConstructorModule(
-    val constructor: BotConstructor,
-    awsProvider: AwsProvider
+    constructorModule: BotConstructor,
+    private val filesStorageDelegate: FilesStorageDelegate
 ) {
 
     //todo Валидация + подбивка айдишников
@@ -16,9 +14,8 @@ class ConstructorModule(
     //todo Предписанные методы
     //todo Предписанные переменные
 
-    val chatBot = constructor.getChatBot()
-    private val filesProvider = FilesProvider(chatBot.botUsername, awsProvider)
-    private var instructionsParser = InstructionsParser(filesProvider.getInstructionsModel())
+    val chatBot = constructorModule.getChatBot()
+    private var instructionsParser = InstructionsParser(constructorModule.getInstructions())
     private val scriptExecutor = ScriptExecutor(this)
 
     private fun validate() {
@@ -48,32 +45,10 @@ class ConstructorModule(
     fun getButton(buttonId: String, type: Int) = instructionsParser.getButton(buttonId, type)
 
     fun updateInstructions(instructions: InstructionsModel) {
-        filesProvider.updateInstructions(instructions)
         instructionsParser.setInstructions(instructions)
     }
 
-    fun getInstructions(): InstructionsModel? {
-        return filesProvider.getInstructionsModel()
-    }
+    fun getFilesProvider() = filesStorageDelegate
 
-    fun getInstructionsString(): String {
-        return filesProvider.getInstructionsString()
-    }
-
-    fun saveImage(imageBase64: String): String {
-        val imageId = UUID.randomUUID().toString()
-        filesProvider.saveImage(imageId, imageBase64)
-        return imageId
-    }
-
-    fun getFilesProvider() = filesProvider
-
-    fun getImage(imageId: String): InputStream {
-        return filesProvider.getImage(imageId)
-    }
-
-    fun getImageUrl(imageId: String): String {
-        return filesProvider.getImageUrl(imageId)
-    }
 
 }

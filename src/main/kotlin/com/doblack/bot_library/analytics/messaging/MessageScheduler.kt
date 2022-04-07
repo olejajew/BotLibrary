@@ -1,5 +1,6 @@
 package com.doblack.bot_library.analytics.messaging
 
+import com.doblack.bot_library.analytics.models.MailingModel
 import java.util.*
 
 class MessageScheduler(private val messagingProvider: MessagingProvider) {
@@ -26,6 +27,18 @@ class MessageScheduler(private val messagingProvider: MessagingProvider) {
                 }
             }, nextPlanningMessage.sentTime - System.currentTimeMillis()
         )
+    }
+
+    fun mailingChanged(mailingModel: MailingModel) {
+        if (this.mailingId == mailingModel.mailingId || (this.sendingTime ?: 0) > mailingModel.sentTime) {
+            init()
+        }
+    }
+
+    fun newMailingMessage(date: Long) {
+        if ((sendingTime ?: 0) > date) {
+            init()
+        }
     }
 
 }

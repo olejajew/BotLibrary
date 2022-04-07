@@ -7,40 +7,51 @@ import com.doblack.bot_library.base.chatId
 import com.doblack.bot_library.base.getCommand
 import com.doblack.bot_library.constructor.BotConstructor
 import com.doblack.bot_library.constructor.ConstructorModule
-import com.doblack.bot_library.core.AwsProvider
-import com.doblack.bot_library.core.FirestoreProvider
-import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 
 abstract class DoBlackBot(
     private val botId: String,
-    firestoreProvider: FirestoreProvider,
-    awsProvider: AwsProvider
 ) : ChatBot(), AnalyticsBot,
     BotConstructor {
 
     //todo Бля буду конфликт между mailin со стороны analytics и со стороны constructor
-    //todo Вынести строки для сообщений Reward и Referrer в отдельное место в настройках
 
-    var analyticsModule: AnalyticsModule = AnalyticsModule(this, firestoreProvider, awsProvider)
-    var constructorModule: ConstructorModule? = ConstructorModule(this, awsProvider)
+    var analyticsModule: AnalyticsModule? = null
+    var constructorModule: ConstructorModule? = null
 
-    override fun documentReceived(message: Message) {
-
+    fun initAnalyticsModule(
+        databaseDelegate: DatabaseDelegate,
+        filesStorageDelegate: FilesStorageDelegate,
+    ) {
+        analyticsModule = AnalyticsModule(
+            this,
+            databaseDelegate,
+            filesStorageDelegate,
+            true
+        )
     }
 
-    override fun photoReceived(message: Message) {
-
+    fun initConstructorModule(filesStorageDelegate: FilesStorageDelegate) {
+        constructorModule = ConstructorModule(
+            this,
+            filesStorageDelegate
+        )
     }
 
-    override fun commandReceived(message: Message) {
-        super.commandReceived(message)
-        constructorModule?.onCommand(message.getCommand(), message.chatId)
+    override fun commandReceived(update: Update) {
+        super.commandReceived(update)
+        constructorModule?.onCommand(update.message.getCommand(), update.chatId())
+        onCommandReceived(update)
     }
 
-    override fun messageReceived(message: Message) {
-        constructorModule?.onMessage(message.text, message.chatId)
+    abstract fun onCommandReceived(update: Update)
+
+    override fun messageReceived(update: Update) {
+        constructorModule?.onMessage(update.message.text, update.chatId())
+        onMessageReceived(update)
     }
+
+    abstract fun onMessageReceived(update: Update)
 
     override fun callbackMessageReceived(update: Update) {
         constructorModule?.callbackReceived(
@@ -48,7 +59,10 @@ abstract class DoBlackBot(
             update.callbackQuery.inlineMessageId,
             update.chatId()
         )
+        onCallbackReceived(update)
     }
+
+    abstract fun onCallbackReceived(update: Update)
 
     override fun getChatBot(): ChatBot {
         return this

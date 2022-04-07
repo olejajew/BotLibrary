@@ -1,12 +1,11 @@
 package com.doblack.bot_library.analytics.referrer
 
 import com.doblack.bot_library.analytics.AnalyticsModule
-import com.doblack.bot_library.analytics.referrer.data.ReferrerLinkModel
-import com.doblack.bot_library.analytics.referrer.data.ReferrerPair
-import com.doblack.bot_library.analytics.referrer.data.UserReferrerInfo
+import com.doblack.bot_library.analytics.models.ReferrerPair
 import com.doblack.bot_library.base.UserLifecycleObserver
+import com.doblack.bot_library.base.chatId
 import com.doblack.bot_library.base.getReferrerIfHas
-import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.Update
 
 class ReferrerProvider(
     private val analyticsModule: AnalyticsModule,
@@ -25,28 +24,34 @@ class ReferrerProvider(
         this.allowedAnyReferrers = allowedAnyReferrers
     }
 
-    override fun onStartCommand(message: Message) {
-        val referrer = message.getReferrerIfHas() ?: return
-        val referrerPair = ReferrerPair(referrer, message.chatId, System.currentTimeMillis())
-        if (analyticsModule.getDatabaseHelper().referrerPairsTableProvider.checkHasReferrer(referrerPair)) {
+    override fun onStartCommand(update: Update) {
+        val referrer = update.message.getReferrerIfHas() ?: return
+        val referrerPair = ReferrerPair(referrer, update.chatId(), System.currentTimeMillis())
+        if (analyticsModule.getDatabase().checkAlreadyReferrer(referrerPair)) {
             return
         }
-        val userReferrer = !analyticsModule.getDatabaseHelper().referrersTableProvider.checkExistReferrer(referrer)
+        val userReferrer = !analyticsModule.getDatabase().checkExistReferrer(referrer)
         referrerReceived(referrerPair, userReferrer)
 
     }
 
     private fun referrerReceived(referrerPair: ReferrerPair, userReferrer: Boolean) {
-        analyticsModule.getDatabaseHelper().referrerPairsTableProvider.saveReferrerPaid(referrerPair)
+        analyticsModule.getDatabase().newReferral(referrerPair)
         if (userReferrer) {
             newReferralListener.referralReward(referrerPair.referralId, getUserReferralReward())
             newReferralListener.referrerReward(referrerPair.referrer.toLongOrNull(), getUserReferrerReward())
         } else {
             val referrerInstructions =
-                analyticsModule.getDatabaseHelper().referrersTableProvider.getReferrerInstructions(referrerPair.referrer)
+                analyticsModule.getDatabase().getReferrerInstructions(referrerPair.referrer)
             if (referrerInstructions != null && (referrerInstructions.limit > referrerInstructions.usedCount || referrerInstructions.limit == -1)) {
                 newReferralListener.referralReward(referrerPair.referralId, referrerInstructions.reward)
-                analyticsModule.getDatabaseHelper().referrersTableProvider.newReferral(referrerInstructions.referrerId)
+                analyticsModule.getDatabase().newReferral(
+                    ReferrerPair(
+                        referrerInstructions.referrerId,
+                        referrerPair.referralId,
+                        referrerPair.date
+                    )
+                )
             }
         }
     }
@@ -55,37 +60,12 @@ class ReferrerProvider(
 
     }
 
-    fun saveReferrerLink(referrerLinkModel: ReferrerLinkModel) {
-        analyticsModule.getDatabaseHelper().referrersTableProvider.saveReferrer(referrerLinkModel)
-    }
-
-    fun updateReferrerLink(referrerLinkModel: ReferrerLinkModel) {
-        analyticsModule.getDatabaseHelper().referrersTableProvider.updateReferrer(referrerLinkModel)
-    }
-
-    fun getUserReferrerReward() = analyticsModule
-        .getDatabaseHelper()
+    private fun getUserReferrerReward() = analyticsModule
+        .getDatabase()
         .getBotPreferencesString(REFERRER_REWARD)
 
-    fun getUserReferralReward() = analyticsModule
-        .getDatabaseHelper()
+    private fun getUserReferralReward() = analyticsModule
+        .getDatabase()
         .getBotPreferencesString(REFERRAL_REWARD)
-
-    fun getAllReferrerLinks(): List<ReferrerLinkModel> {
-        return analyticsModule.getDatabaseHelper().referrersTableProvider
-            .getAllReferrerInstructions()
-    }
-
-    fun deleteReferrerLink(referrerLinkId: String) {
-        analyticsModule.getDatabaseHelper().referrersTableProvider.deleteReferrerLink(referrerLinkId)
-    }
-
-    fun getReferrerInstructions(referrerName: String) =
-        analyticsModule.getDatabaseHelper().referrersTableProvider.getReferrerInstructions(referrerName)
-
-    fun updateUserReferrerInfo(userReferrerInfo: UserReferrerInfo) {
-        analyticsModule.getDatabaseHelper()
-            .updatePreferences(userReferrerInfo)
-    }
 
 }

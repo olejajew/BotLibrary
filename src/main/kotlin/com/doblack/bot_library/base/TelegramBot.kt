@@ -27,10 +27,10 @@ abstract class TelegramBot : TelegramLongPollingBot() {
             update.hasCallbackQuery() -> {
                 callbackMessageReceived(update)
             }
-            update.message.hasDocument() -> documentReceived(update.message)
-            update.message.hasPhoto() -> photoReceived(update.message)
-            update.message.checkIsCommand() -> commandReceived(update.message)
-            else -> messageReceived(update.message)
+            update.message.hasDocument() -> documentReceived(update)
+            update.message.hasPhoto() -> photoReceived(update)
+            update.message.checkIsCommand() -> commandReceived(update)
+            else -> messageReceived(update)
         }
     }
 
@@ -40,13 +40,13 @@ abstract class TelegramBot : TelegramLongPollingBot() {
         return media
     }
 
-    abstract fun documentReceived(message: Message)
+    abstract fun documentReceived(update: Update)
 
-    abstract fun photoReceived(message: Message)
+    abstract fun photoReceived(update: Update)
 
-    abstract fun commandReceived(message: Message)
+    abstract fun commandReceived(update: Update)
 
-    abstract fun messageReceived(message: Message)
+    abstract fun messageReceived(update: Update)
 
     abstract fun callbackMessageReceived(update: Update)
 
