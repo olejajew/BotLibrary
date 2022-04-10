@@ -17,7 +17,7 @@ interface DatabaseDelegate {
     fun getNextScheduledMessage(): MailingModel?
 
     fun saveMailing(mailingModel: MailingModel) {}
-    fun saveMailingMessageId(mailingMessageModel: MailingMessageModel)
+    fun saveMailingMessageIds(mailingMessageModel: MutableList<MailingMessageModel>)
     fun getMailingMessageIds(id: String): List<MailingMessageModel>
     fun checkAlreadyReferrer(referrerPair: ReferrerPair): Boolean
     fun checkExistReferrer(referrer: String): Boolean

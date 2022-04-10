@@ -29,6 +29,8 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
     }
 
     private fun sendMessageWithImageAndButtons(mailingModel: MailingModel) {
+        val listMessageIds = mutableListOf<MailingMessageModel>()
+
         val imageName = mailingModel.images[0]
         val file = analyticsModule.getFilesProvider().getImageInputStream(imageName)
         val byteArray = file.readBytes()
@@ -43,7 +45,7 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
                     )
 
             if (message != null) {
-                analyticsModule.getDatabase().saveMailingMessageId(
+                listMessageIds.add(
                     MailingMessageModel(
                         mailingModel.mailingId,
                         it,
@@ -52,9 +54,13 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
                 )
             }
         }
+        analyticsModule.getDatabase().saveMailingMessageIds(listMessageIds)
     }
 
     private fun sendMessageWithImage(mailingModel: MailingModel) {
+        val listMessageIds = mutableListOf<MailingMessageModel>()
+
+        //todo Вот тут выходит что мы только одну картинку берем. Не камильфо
         val imageName = mailingModel.images[0]
         val file = analyticsModule.getFilesProvider().getImageInputStream(imageName)
         val byteArray = file.readBytes()
@@ -69,7 +75,7 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
                 mailingModel.message
             )
             if (message != null) {
-                analyticsModule.getDatabase().saveMailingMessageId(
+                listMessageIds.add(
                     MailingMessageModel(
                         mailingModel.mailingId,
                         it,
@@ -78,14 +84,16 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
                 )
             }
         }
+        analyticsModule.getDatabase().saveMailingMessageIds(listMessageIds)
     }
 
     private fun sendMessageWithButtons(mailingModel: MailingModel) {
+        val listMessageIds = mutableListOf<MailingMessageModel>()
         val listButtons = arrayListOf(mailingModel.buttons)
         analyticsModule.getUsersProvider().getAliveUsers().forEach {
             val message = analyticsModule.getChatBot().sendMessage(mailingModel.message, it, listButtons, true)
             if (message != null) {
-                analyticsModule.getDatabase().saveMailingMessageId(
+                listMessageIds.add(
                     MailingMessageModel(
                         mailingModel.mailingId,
                         it,
@@ -94,13 +102,15 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
                 )
             }
         }
+        analyticsModule.getDatabase().saveMailingMessageIds(listMessageIds)
     }
 
     private fun sendTextMessage(mailingModel: MailingModel) {
+        val list = mutableListOf<MailingMessageModel>()
         analyticsModule.getUsersProvider().getAliveUsers().forEach {
             val message = analyticsModule.getChatBot().sendMessage(mailingModel.message, it)
             if (message != null) {
-                analyticsModule.getDatabase().saveMailingMessageId(
+                list.add(
                     MailingMessageModel(
                         mailingModel.mailingId,
                         it,
@@ -109,6 +119,7 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
                 )
             }
         }
+        analyticsModule.getDatabase().saveMailingMessageIds(list)
     }
 
 }

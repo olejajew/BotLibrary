@@ -9,10 +9,7 @@ import com.doblack.bot_library.constructor.BotConstructor
 import com.doblack.bot_library.constructor.ConstructorModule
 import org.telegram.telegrambots.meta.api.objects.Update
 
-abstract class DoBlackBot(
-    private val botId: String,
-) : ChatBot(), AnalyticsBot,
-    BotConstructor {
+abstract class DoBlackBot() : ChatBot() {
 
     //todo Бля буду конфликт между mailin со стороны analytics и со стороны constructor
 
@@ -20,20 +17,21 @@ abstract class DoBlackBot(
     var constructorModule: ConstructorModule? = null
 
     fun initAnalyticsModule(
+        analyticsBot: AnalyticsBot,
         databaseDelegate: DatabaseDelegate,
         filesStorageDelegate: FilesStorageDelegate,
     ) {
         analyticsModule = AnalyticsModule(
-            this,
+            analyticsBot,
             databaseDelegate,
             filesStorageDelegate,
             true
         )
     }
 
-    fun initConstructorModule(filesStorageDelegate: FilesStorageDelegate) {
+    fun initConstructorModule(botConstructor: BotConstructor, filesStorageDelegate: FilesStorageDelegate) {
         constructorModule = ConstructorModule(
-            this,
+            botConstructor,
             filesStorageDelegate
         )
     }
@@ -64,12 +62,5 @@ abstract class DoBlackBot(
 
     abstract fun onCallbackReceived(update: Update)
 
-    override fun getChatBot(): ChatBot {
-        return this
-    }
-
-    override fun getBotId(): String {
-        return botId
-    }
 
 }
