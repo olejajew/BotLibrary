@@ -7,8 +7,6 @@ interface AnalyticsBot {
 
     fun getChatBot(): ChatBot
 
-    fun getBotId(): String
-
     fun getNewReferrerListener(): NewReferralListener
 
 }

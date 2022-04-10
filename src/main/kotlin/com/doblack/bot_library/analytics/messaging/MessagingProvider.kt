@@ -37,8 +37,12 @@ class MessagingProvider(private val analyticsModule: AnalyticsModule) {
         return analyticsModule.getDatabase().getNextScheduledMessage()
     }
 
-    fun updatePlanningMessage(mailingModel: MailingModel) {
-        messageScheduler.mailingChanged(mailingModel)
+    fun updatePlanningMessage(mailingId: String, sendingTime: Long) {
+        messageScheduler.mailingChanged(mailingId, sendingTime)
+    }
+
+    fun deletePlanningMessage(mailingId: String) {
+        messageScheduler.mailingDeleted(mailingId)
     }
 
     fun newPlanningMessage(date: Long) {
@@ -60,7 +64,6 @@ class MessagingProvider(private val analyticsModule: AnalyticsModule) {
             }
         }
     }
-
 
 
 }

@@ -22,6 +22,10 @@ abstract class TelegramBot : TelegramLongPollingBot() {
         }
     }
 
+    fun stopBot() {
+        clearWebhook()
+    }
+
     override fun onUpdateReceived(update: Update) {
         when {
             update.hasCallbackQuery() -> {

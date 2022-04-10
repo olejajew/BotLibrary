@@ -22,6 +22,7 @@ class MessageScheduler(private val messagingProvider: MessagingProvider) {
             object : TimerTask() {
                 override fun run() {
                     println("Send scheduling message")
+                    //todo Вот тут надо собрать список всех id заблокированных пользователей и отдать их списком
                     messagingProvider.sendMessage(nextPlanningMessage)
                     init()
                 }
@@ -29,8 +30,14 @@ class MessageScheduler(private val messagingProvider: MessagingProvider) {
         )
     }
 
-    fun mailingChanged(mailingModel: MailingModel) {
-        if (this.mailingId == mailingModel.mailingId || (this.sendingTime ?: 0) > mailingModel.sentTime) {
+    fun mailingChanged(mailingId: String, sendingTime: Long) {
+        if (this.mailingId == mailingId || (this.sendingTime ?: 0) > sendingTime) {
+            init()
+        }
+    }
+
+    fun mailingDeleted(mailingId: String) {
+        if (this.mailingId == mailingId) {
             init()
         }
     }

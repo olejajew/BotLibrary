@@ -49,12 +49,12 @@ class AnalyticsModule(
         messagingProvider.newPlanningMessage(date)
     }
 
-    fun deletePlanningMessage(mailingModel: MailingModel) {
-        messagingProvider.updatePlanningMessage(mailingModel)
+    fun deletePlanningMessage(mailingId: String) {
+        messagingProvider.deletePlanningMessage(mailingId)
     }
 
-    fun updatePlanningMessage(mailingModel: MailingModel) {
-        messagingProvider.updatePlanningMessage(mailingModel)
+    fun updatePlanningMessage(mailingId: String, sendingTime: Long) {
+        messagingProvider.updatePlanningMessage(mailingId, sendingTime)
     }
 
 }
