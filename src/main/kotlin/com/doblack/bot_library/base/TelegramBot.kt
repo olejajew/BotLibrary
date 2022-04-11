@@ -38,8 +38,9 @@ abstract class TelegramBot : TelegramLongPollingBot() {
 
     override fun onUpdateReceived(update: Update) {
         if (nextMessageCatchers.containsKey(update.chatId())) {
-            nextMessageCatchers[update.chatId()]!!.onMessageReceived(update)
+            val catcher = nextMessageCatchers[update.chatId()]!!
             nextMessageCatchers.remove(update.chatId())
+            catcher.onMessageReceived(update)
             return
         }
         when {
