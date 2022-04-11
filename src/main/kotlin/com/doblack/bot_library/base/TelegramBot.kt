@@ -11,6 +11,8 @@ import java.io.File
 
 abstract class TelegramBot : TelegramLongPollingBot() {
 
+    private val nextMessageCatchers = hashMapOf<Long, NextMessageCatcher>()
+
     open fun runBot(onStart: (success: Boolean) -> Unit) {
         val botsApi = TelegramBotsApi(DefaultBotSession::class.java)
         try {
@@ -26,7 +28,20 @@ abstract class TelegramBot : TelegramLongPollingBot() {
         clearWebhook()
     }
 
+    fun catchNextMessage(chatId: Long, nextMessageCatcher: NextMessageCatcher) {
+        nextMessageCatchers[chatId] = nextMessageCatcher
+    }
+
+    fun stopCatchNextMessage(chatId: Long) {
+        nextMessageCatchers.remove(chatId)
+    }
+
     override fun onUpdateReceived(update: Update) {
+        if (nextMessageCatchers.containsKey(update.chatId())) {
+            nextMessageCatchers[update.chatId()]!!.onMessageReceived(update)
+            nextMessageCatchers.remove(update.chatId())
+            return
+        }
         when {
             update.hasCallbackQuery() -> {
                 callbackMessageReceived(update)
