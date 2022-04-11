@@ -42,8 +42,6 @@ abstract class DoBlackBot() : ChatBot() {
         onCommandReceived(update)
     }
 
-    abstract fun onCommandReceived(update: Update)
-
     override fun messageReceived(update: Update) {
         constructorModule?.onMessage(update.message.text, update.chatId())
         onMessageReceived(update)
