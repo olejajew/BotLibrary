@@ -41,6 +41,10 @@ class AnalyticsModule(
         messagingProvider.sendMessage(mailingModel)
     }
 
+    fun deleteMessage(mailingId: String){
+        messagingProvider.deleteMessage(mailingId)
+    }
+
     fun updateMessage(mailingModel: MailingModel){
         messagingProvider.updateMessage(mailingModel)
     }
