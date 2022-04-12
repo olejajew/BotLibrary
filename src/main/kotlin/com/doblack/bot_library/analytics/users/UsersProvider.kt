@@ -22,7 +22,8 @@ class UsersProvider(private val analyticsModule: AnalyticsModule) : UserLifecycl
                 update.chatId(),
                 System.currentTimeMillis(),
                 true,
-                null
+                null,
+                update.message.from.userName
             )
         )
     }

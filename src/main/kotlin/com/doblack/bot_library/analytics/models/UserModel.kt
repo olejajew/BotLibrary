@@ -5,4 +5,5 @@ data class UserModel(
     val createdTime: Long = 0L,
     val alive: Boolean = true,
     val blockedTime: Long? = null,
+    val userName: String? = null
 )
