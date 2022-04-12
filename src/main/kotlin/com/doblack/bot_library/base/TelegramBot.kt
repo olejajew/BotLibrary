@@ -37,12 +37,6 @@ abstract class TelegramBot : TelegramLongPollingBot() {
     }
 
     override fun onUpdateReceived(update: Update) {
-        if (nextMessageCatchers.containsKey(update.chatId())) {
-            val catcher = nextMessageCatchers[update.chatId()]!!
-            nextMessageCatchers.remove(update.chatId())
-            catcher.onMessageReceived(update)
-            return
-        }
         when {
             update.hasCallbackQuery() -> {
                 callbackMessageReceived(update)
@@ -50,7 +44,16 @@ abstract class TelegramBot : TelegramLongPollingBot() {
             update.message.hasDocument() -> documentReceived(update)
             update.message.hasPhoto() -> photoReceived(update)
             update.message.checkIsCommand() -> commandReceived(update)
-            else -> messageReceived(update)
+            else -> {
+                if (nextMessageCatchers.containsKey(update.chatId())) {
+                    val catcher = nextMessageCatchers[update.chatId()]!!
+                    nextMessageCatchers.remove(update.chatId())
+                    catcher.onMessageReceived(update)
+                    return
+                } else {
+                    messageReceived(update)
+                }
+            }
         }
     }
 

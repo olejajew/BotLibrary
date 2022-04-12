@@ -28,10 +28,7 @@ abstract class ChatBot : TelegramBot() {
                 it.onStartCommand(update)
             }
         }
-        onCommandReceived(update)
     }
-
-    abstract fun onCommandReceived(update: Update)
 
     fun editMessage(
         chatId: Long,
