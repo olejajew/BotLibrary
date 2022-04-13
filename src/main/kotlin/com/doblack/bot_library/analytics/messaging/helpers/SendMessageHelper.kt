@@ -9,12 +9,6 @@ import java.io.ByteArrayInputStream
 class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
 
     fun sendMessage(mailingModel: MailingModel) {
-        if (mailingModel.mailingId.isEmpty()) {
-            analyticsModule.getDatabase().saveMailing(mailingModel)
-        } else {
-            mailingModel.mailingId
-        }
-
         if (mailingModel.images.isNotEmpty()) {
             if (mailingModel.buttons.isNotEmpty()) {
                 sendMessageWithImageAndButtons(mailingModel)
