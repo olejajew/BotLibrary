@@ -18,13 +18,11 @@ interface DatabaseDelegate {
 
     fun saveMailing(mailingModel: MailingModel) {}
     fun saveMailingMessageIds(mailingMessageModels: MutableList<MailingMessageModel>)
-    fun getMailingMessageIds(id: String): List<MailingMessageModel>
     fun checkAlreadyReferrer(referrerPair: ReferrerPair): Boolean
     fun checkExistReferrer(referrer: String): Boolean
     fun newReferral(referrerPair: ReferrerPair)
     fun getReferrerInstructions(referrer: String): ReferrerLinkModel?
     fun getAliveUsers(): List<UserModel>
     fun saveUser(userModel: UserModel)
-    fun getAliveUsersId(): List<Long>
 
 }

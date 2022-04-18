@@ -8,27 +8,27 @@ import java.io.ByteArrayInputStream
 
 class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
 
-    fun sendMessage(mailingModel: MailingModel) {
+    fun sendMessage(mailingModel: MailingModel, usersId: List<Long>) {
         if (mailingModel.images.isNotEmpty()) {
             if (mailingModel.buttons.isNotEmpty()) {
-                sendMessageWithImageAndButtons(mailingModel)
+                sendMessageWithImageAndButtons(mailingModel, usersId)
             } else {
-                sendMessageWithImage(mailingModel)
+                sendMessageWithImage(mailingModel, usersId)
             }
         } else if (mailingModel.buttons.isNotEmpty()) {
-            sendMessageWithButtons(mailingModel)
+            sendMessageWithButtons(mailingModel, usersId)
         } else {
-            sendTextMessage(mailingModel)
+            sendTextMessage(mailingModel, usersId)
         }
     }
 
-    private fun sendMessageWithImageAndButtons(mailingModel: MailingModel) {
+    private fun sendMessageWithImageAndButtons(mailingModel: MailingModel, usersId: List<Long>) {
         val listMessageIds = mutableListOf<MailingMessageModel>()
 
         val imageName = mailingModel.images[0]
         val file = analyticsModule.getFilesProvider().getImageInputStream(imageName)
         val byteArray = file.readBytes()
-        analyticsModule.getUsersProvider().getAliveUsers().forEach {
+        usersId.forEach {
             val message =
                 analyticsModule.getChatBot()
                     .sendMessageWithImageInputStream(
@@ -51,14 +51,14 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
         analyticsModule.getDatabase().saveMailingMessageIds(listMessageIds)
     }
 
-    private fun sendMessageWithImage(mailingModel: MailingModel) {
+    private fun sendMessageWithImage(mailingModel: MailingModel, usersId: List<Long>) {
         val listMessageIds = mutableListOf<MailingMessageModel>()
 
         //todo Вот тут выходит что мы только одну картинку берем. Не камильфо
         val imageName = mailingModel.images[0]
         val file = analyticsModule.getFilesProvider().getImageInputStream(imageName)
         val byteArray = file.readBytes()
-        analyticsModule.getUsersProvider().getAliveUsers().forEach {
+        usersId.forEach {
             val imageInputStream = ImageInputStream(
                 ByteArrayInputStream(byteArray.clone()),
                 imageName
@@ -81,10 +81,10 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
         analyticsModule.getDatabase().saveMailingMessageIds(listMessageIds)
     }
 
-    private fun sendMessageWithButtons(mailingModel: MailingModel) {
+    private fun sendMessageWithButtons(mailingModel: MailingModel, usersId: List<Long>) {
         val listMessageIds = mutableListOf<MailingMessageModel>()
         val listButtons = arrayListOf(mailingModel.buttons)
-        analyticsModule.getUsersProvider().getAliveUsers().forEach {
+        usersId.forEach {
             val message = analyticsModule.getChatBot().sendMessage(mailingModel.message, it, listButtons, true)
             if (message != null) {
                 listMessageIds.add(
@@ -99,9 +99,9 @@ class SendMessageHelper(private val analyticsModule: AnalyticsModule) {
         analyticsModule.getDatabase().saveMailingMessageIds(listMessageIds)
     }
 
-    private fun sendTextMessage(mailingModel: MailingModel) {
+    private fun sendTextMessage(mailingModel: MailingModel, usersId: List<Long>) {
         val list = mutableListOf<MailingMessageModel>()
-        analyticsModule.getUsersProvider().getAliveUsers().forEach {
+        usersId.forEach {
             val message = analyticsModule.getChatBot().sendMessage(mailingModel.message, it)
             if (message != null) {
                 list.add(

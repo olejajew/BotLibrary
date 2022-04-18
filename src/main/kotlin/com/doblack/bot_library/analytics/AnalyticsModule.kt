@@ -6,6 +6,7 @@ import com.doblack.bot_library.analytics.models.MailingModel
 import com.doblack.bot_library.analytics.referrer.ReferrerProvider
 import com.doblack.bot_library.analytics.users.UsersProvider
 import com.doblack.bot_library.FilesStorageDelegate
+import com.doblack.bot_library.analytics.models.MailingMessageModel
 
 class AnalyticsModule(
     private val analyticsBot: AnalyticsBot,
@@ -37,28 +38,16 @@ class AnalyticsModule(
 
     fun getDatabase() = databaseDelegate
 
-    fun sendMessage(mailingModel: MailingModel){
-        messagingProvider.sendMessage(mailingModel)
+    fun sendMessage(mailingModel: MailingModel, usersId: List<Long>){
+        messagingProvider.sendMessage(mailingModel, usersId)
     }
 
-    fun deleteMessage(mailingId: String){
-        messagingProvider.deleteMessage(mailingId)
+    fun deleteMessage(mailingMessageModels: List<MailingMessageModel>){
+        messagingProvider.deleteMessage(mailingMessageModels)
     }
 
-    fun updateMessage(mailingModel: MailingModel){
-        messagingProvider.updateMessage(mailingModel)
-    }
-
-    fun newPlanningMessage(date: Long){
-        messagingProvider.newPlanningMessage(date)
-    }
-
-    fun deletePlanningMessage(mailingId: String) {
-        messagingProvider.deletePlanningMessage(mailingId)
-    }
-
-    fun updatePlanningMessage(mailingId: String, sendingTime: Long) {
-        messagingProvider.updatePlanningMessage(mailingId, sendingTime)
+    fun updateMessage(mailingModel: MailingModel, mailingMessageModels: List<MailingMessageModel>){
+        messagingProvider.updateMessage(mailingModel, mailingMessageModels)
     }
 
 }

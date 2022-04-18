@@ -32,8 +32,4 @@ class UsersProvider(private val analyticsModule: AnalyticsModule) : UserLifecycl
         analyticsModule.getDatabase().userBlocked(chatId)
     }
 
-    fun getAliveUsers(): List<Long> {
-        return analyticsModule.getDatabase().getAliveUsersId()
-    }
-
 }
